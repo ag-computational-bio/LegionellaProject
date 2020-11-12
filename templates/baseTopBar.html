@@ -1,0 +1,14 @@
+{{define "baseTopBar"}}
+<div class="navbar">
+  <div class="dropdown">
+    <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+      Alignments
+    </button>
+    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+      {{range .BigWigsList.ALL}}
+        <a class="dropdown-item" href="#" onclick="addBigWigsTrack('{{.GroupID}}')">{{.GroupName}}</a>
+      {{end}}
+    </div>
+  </div>
+</div>
+{{end}}
