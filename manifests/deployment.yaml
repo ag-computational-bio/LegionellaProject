@@ -28,7 +28,7 @@ spec:
               secretKeyRef:
                 key: BiodataDBAPIKey
                 name: api-key
-          image: quay.io/mariusdieckmann/legionellaproject:test
+          image: quay.io/mariusdieckmann/legionellaproject:master
           volumeMounts:
             - name: config
               mountPath: "/config"
@@ -69,10 +69,13 @@ spec:
   - host: legionellaproject.ingress.rancher.computational.bio
     http:
       paths:
-      - backend:
-          serviceName: website
-          servicePort: 8080
-        path: /
+        - path: /
+          pathType: Prefix
+          backend:
+            service:
+              name: website
+              port:
+                number: 8080
   tls: # < placing a host in the TLS config will indicate a certificate should be created
   - hosts:
     - legionellaproject.ingress.rancher.computational.bio

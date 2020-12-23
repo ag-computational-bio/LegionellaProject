@@ -46,6 +46,7 @@ type Track struct {
 	Color      string      `json:"color,omitempty"`
 	Indexed    string      `json:"indexed,omitempty"`
 	AutoHeight bool        `json:"autoHeight,omitempty"`
+	Searchable bool        `json:"searchable,omitempty"`
 	GuideLines []GuideLine `json:"guidelines,omitempty"`
 }
 

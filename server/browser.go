@@ -69,6 +69,7 @@ func (browser *BrowserEndpoints) GetDefaultTrackConfig(c *gin.Context) {
 		Format:     "gff3",
 		Name:       "Annotation",
 		AutoHeight: true,
+		Searchable: true,
 		URL:        gffAnnotationFiles.GetLinks()[0].GetLink()[0],
 	}
 
