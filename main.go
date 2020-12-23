@@ -9,7 +9,7 @@ import (
 )
 
 var opts struct {
-	ConfigFile string `short:"c" long:"configfile" description:"File of the config file" default:"config/default-conf.yaml"`
+	ConfigFile string `short:"c" long:"configfile" description:"File of the config file" default:"config/local-conf.yaml"`
 }
 
 func main() {

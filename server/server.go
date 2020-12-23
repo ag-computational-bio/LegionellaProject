@@ -76,6 +76,7 @@ func Run() {
 	dataGroup := router.Group("/data")
 	dataGroup.GET("/default", browserEndpoints.GetDefaultTrackConfig)
 	dataGroup.GET("/bigWigsTrack/:id", browserEndpoints.GetBigWigsTracks)
+	dataGroup.GET("/bamTrack/:id", browserEndpoints.GetBamTrack)
 
 	browserGroup := router.Group("/browser")
 	browserGroup.GET("/", browserEndpoints.IGVBrowser)

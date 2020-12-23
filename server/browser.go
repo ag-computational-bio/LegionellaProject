@@ -30,6 +30,7 @@ type ID struct {
 	ID string `uri:"id" binding:"required"`
 }
 
+//GetDefaultTrackConfig
 func (browser *BrowserEndpoints) GetDefaultTrackConfig(c *gin.Context) {
 	token := browser.AutHandler.GetAccessTokenFromGinContext(c)
 
@@ -64,10 +65,11 @@ func (browser *BrowserEndpoints) GetDefaultTrackConfig(c *gin.Context) {
 	}
 
 	gffTrack := Track{
-		Type:   "annotation",
-		Format: "gff3",
-		Name:   "Annotation",
-		URL:    gffAnnotationFiles.GetLinks()[0].GetLink()[0],
+		Type:       "annotation",
+		Format:     "gff3",
+		Name:       "Annotation",
+		AutoHeight: true,
+		URL:        gffAnnotationFiles.GetLinks()[0].GetLink()[0],
 	}
 
 	reference := Reference{
@@ -112,6 +114,29 @@ func (browser *BrowserEndpoints) GetBigWigsTracks(c *gin.Context) {
 	c.JSON(200, tracks)
 }
 
+func (browser *BrowserEndpoints) GetBamTrack(c *gin.Context) {
+	var id ID
+	err := c.BindUri(&id)
+	if err != nil {
+		log.Println(err.Error())
+		c.AbortWithError(400, err)
+		return
+	}
+
+	token := browser.AutHandler.GetAccessTokenFromGinContext(c)
+
+	token = os.Getenv("APIToken")
+
+	tracks, err := browser.DataHandler.GetBamTrack(id.ID, token)
+	if err != nil {
+		log.Println(err.Error())
+		c.AbortWithError(400, err)
+		return
+	}
+
+	c.JSON(200, tracks)
+}
+
 //IGVBrowser Starts the igv viewer
 func (browser *BrowserEndpoints) IGVBrowser(c *gin.Context) {
 	token := browser.AutHandler.GetAccessTokenFromGinContext(c)
@@ -124,7 +149,15 @@ func (browser *BrowserEndpoints) IGVBrowser(c *gin.Context) {
 		c.AbortWithError(400, err)
 		return
 	}
-	c.HTML(200, "browser.html", gin.H{"BigWigsList": bigWigsList})
+
+	bamList, err := browser.DataHandler.GetBamList(token)
+	if err != nil {
+		log.Println(err.Error())
+		c.AbortWithError(400, err)
+		return
+	}
+
+	c.HTML(200, "browser.html", gin.H{"BigWigsList": bigWigsList, "BamList": bamList})
 }
 
 func (browser *BrowserEndpoints) outgoingContext() context.Context {

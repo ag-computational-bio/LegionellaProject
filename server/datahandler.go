@@ -1,6 +1,8 @@
 package server
 
 import (
+	"errors"
+	"fmt"
 	"log"
 	"strings"
 
@@ -43,6 +45,7 @@ type Track struct {
 	AutoScale  bool        `json:"autoscale,omitempty"`
 	Color      string      `json:"color,omitempty"`
 	Indexed    string      `json:"indexed,omitempty"`
+	AutoHeight bool        `json:"autoHeight,omitempty"`
 	GuideLines []GuideLine `json:"guidelines,omitempty"`
 }
 
@@ -80,6 +83,82 @@ type FileGroup struct {
 type FileDescription struct {
 	Name string
 	ID   string
+}
+
+func (datahandler *DataHandler) GetBamList(token string) (map[string][]FileGroup, error) {
+	datasetVersion, err := datahandler.getCurrentDatasetVersion(BAM, token)
+	if err != nil {
+		log.Println(err.Error())
+		return nil, err
+	}
+
+	groupList, err := datahandler.getDatasetObjectGroupList(BAM, datasetVersion, token)
+	if err != nil {
+		log.Println(err.Error())
+		return nil, err
+	}
+
+	bamList := make(map[string][]FileGroup)
+	var fileGroupData []FileGroup
+
+	for _, objectGroup := range groupList.DatasetObjectGroups {
+
+		if len(objectGroup.GetObjects()) < 1 {
+			log.Println(fmt.Sprintf("ObjectGroup with id: %v and name: %v has no associated objects", objectGroup.GetID(), objectGroup.GetName()))
+			continue
+		}
+
+		objectGroupRepr := FileGroup{
+			GroupID:   objectGroup.GetID(),
+			GroupName: objectGroup.GetObjects()[0].GetFilename(),
+		}
+
+		fileGroupData = append(fileGroupData, objectGroupRepr)
+
+	}
+
+	bamList["ALL"] = fileGroupData
+
+	return bamList, nil
+}
+
+//GetBamTrack Returns a bam track with a specific id with the default config
+func (datahandler *DataHandler) GetBamTrack(id string, token string) ([]Track, error) {
+	objectGroup, err := datahandler.getObjectGroup(id, token)
+	if err != nil {
+		log.Println(err.Error())
+		return nil, err
+	}
+
+	var tracks []Track
+
+	for _, objectGroup := range objectGroup.GetLinks() {
+		objects := objectGroup.GetObject().GetObjects()
+		if len(objects) < 2 {
+			err := errors.New("Not enough objects in object group for bam file")
+			log.Println(err)
+		}
+
+		track := Track{
+			Color:     "rgb(0, 0, 150)",
+			AutoScale: true,
+			Type:      "alignment",
+			Format:    "bam",
+		}
+
+		for i, object := range objects {
+			if strings.HasSuffix(object.Filename, ".bam") {
+				track.Name = object.GetFilename()
+				track.URL = objectGroup.Link[i]
+			} else if strings.HasSuffix(object.Filename, ".bam.bai") {
+				track.IndexURL = objectGroup.Link[i]
+			}
+		}
+		tracks = append(tracks, track)
+	}
+
+	return tracks, nil
+
 }
 
 //GetBigWigsTrack Returns a bigwigs track with a specific id with the default config

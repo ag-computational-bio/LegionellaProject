@@ -6,7 +6,7 @@ metadata:
     app.kubernetes.io/part-of: legionella
     app.kubernetes.io/version: v0.1.0
   name: legionellawebsite
-  namespace: legionellamarburg
+  namespace: legionella-dashboard
 spec:
   replicas: 3
   selector:
@@ -23,26 +23,29 @@ spec:
     spec:
       containers:
         - env:
-          - name: Oauth2ClientSecret
-            valueFrom:
-              secretKeyRef:
-                key: secret
-                name: oauth2client
-          - name: APIKey
+          - name: APIToken
             valueFrom:
               secretKeyRef:
                 key: BiodataDBAPIKey
                 name: api-key
-          image: foo
+          image: quay.io/mariusdieckmann/legionellaproject:test
+          volumeMounts:
+            - name: config
+              mountPath: "/config"
+              readOnly: true
           name: website
           ports:
           - containerPort: 8080
+      volumes:
+        - name: config
+          configMap:
+            name: legionella-stable-config
 ---
 apiVersion: v1
 kind: Service
 metadata:
   name: website
-  namespace: legionellamarburg
+  namespace: legionella-dashboard
 spec:
   selector:
     app.kubernetes.io/name: website
@@ -53,17 +56,17 @@ spec:
       port: 8080
       targetPort: 8080
 ---
-apiVersion: extensions/v1beta1
+apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: website
-  namespace: legionellamarburg
+  namespace: legionella-dashboard
   annotations:
     cert-manager.io/issuer: letsencrypt-prod
     nginx.ingress.kubernetes.io/ssl-redirect: "true"
 spec:
   rules:
-  - host: legionellaproject.ingress.rancher2.computational.bio
+  - host: legionellaproject.ingress.rancher.computational.bio
     http:
       paths:
       - backend:
@@ -72,6 +75,6 @@ spec:
         path: /
   tls: # < placing a host in the TLS config will indicate a certificate should be created
   - hosts:
-    - legionellaproject.biodatadb.ingress.rancher2.computational.bio
+    - legionellaproject.ingress.rancher.computational.bio
     secretName: ui-legionellaproject-stable-private-cert # < cert-manager will store the created certificate in this secret.
 ---

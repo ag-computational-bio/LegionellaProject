@@ -1,0 +1,16 @@
+Endpoints:
+  DatasetHandler:
+    Host: api.biodatadb.ingress.rancher2.computational.bio
+    Port: 443
+Datasets:
+  Bigwigs: "b99b6daf-97b9-4db4-9ece-9f876e192dd4"
+  Bam: "510a5b04-85ea-421a-8619-fc8542231206"
+  Reference: "2ef67a5a-5f7c-4305-8902-cf57a461bcd5"
+  GFFAnnotation: "3add45ab-ed34-456c-b4c5-8d7b51d04066"
+Auth:
+  URL: "https://keycloak.infra.ingress.rancher.computational.bio/auth/realms/BioDataDB"
+  CallbackURL: "https://legionellaproject.ingress.rancher.computational.bio/auth/callback"
+  ClientID: "Legionella-Dashboard"
+  AuthURL: "https://keycloak.infra.ingress.rancher.computational.bio/auth/realms/BioDataDB/protocol/openid-connect/auth"
+  TokenURL: "https://keycloak.infra.ingress.rancher.computational.bio/auth/realms/BioDataDB/protocol/openid-connect/token"
+  UserInfoURL: "https://keycloak.infra.ingress.rancher.computational.bio/auth/realms/BioDataDB/protocol/openid-connect/userinfo"

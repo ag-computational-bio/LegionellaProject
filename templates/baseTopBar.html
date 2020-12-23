@@ -1,14 +1,32 @@
 {{define "baseTopBar"}}
-<div class="navbar">
-  <div class="dropdown">
-    <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-      Alignments
-    </button>
-    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-      {{range .BigWigsList.ALL}}
-        <a class="dropdown-item" href="#" onclick="addBigWigsTrack('{{.GroupID}}')">{{.GroupName}}</a>
-      {{end}}
-    </div>
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+  <div class="container-fluid">
+    <ul class="navbar-nav mr-auto">
+      <li class="nav-item active">
+        <div class="dropdown">
+          <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            BigWigs
+          </button>
+          <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+            {{range .BigWigsList.ALL}}
+              <a class="dropdown-item" href="#" onclick="addBigWigsTrack('{{.GroupID}}')">{{.GroupName}}</a>
+            {{end}}
+          </div>
+        </div>
+      </li>
+      <li class="nav-item">
+        <div class="dropdown">
+          <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            BAM
+          </button>
+          <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+            {{range .BamList.ALL}}
+              <a class="dropdown-item" href="#" onclick="addBamTrack('{{.GroupID}}')">{{.GroupName}}</a>
+            {{end}}
+          </div>
+        </div>
+      </li>
+    </ul>
   </div>
-</div>
+</nav>
 {{end}}

@@ -23,6 +23,15 @@ function addBigWigsTrack(id) {
 }).then(data => { return data.json()}).then(tracks => addTrack(tracks))
 }
 
+function addBamTrack(id) {
+  var basePath = "/data/bamTrack/"
+  var fullPath = basePath + id
+  fetch(fullPath, {method: "GET", credentials: "same-origin"})
+  .catch((error) => {
+  console.error('Error:', error);
+}).then(data => { return data.json()}).then(tracks => addTrack(tracks))
+}
+
 function addTrack(tracks) {
   for (let track of tracks) {
     igvBrowser.loadTrack(track)

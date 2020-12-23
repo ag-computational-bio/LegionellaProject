@@ -14,6 +14,5 @@ COPY --from=builder /IGVMultiBrowser/IGVMultiBrowser .
 
 COPY static /static
 COPY templates /templates
-COPY config /config
 
-ENTRYPOINT [ "/IGVMultiBrowser", "-c", "/config/default-config.yaml" ]
+ENTRYPOINT [ "/IGVMultiBrowser", "-c", "/config/config.yaml" ]
